@@ -9,7 +9,6 @@
 #define LIGHT_OFF_THRESHOLD 2200
 bool isLightUp = false;
 
-#define ADC_PIN GPIO_NUM_4
 #define ADC_CHANEL ADC_CHANNEL_3
 #define ADC_UNIT ADC_UNIT_1
 #define ADC_ATTEN ADC_ATTEN_DB_12
@@ -77,21 +76,23 @@ void app_main(void)
 
     int averaged_value = sma_add_sample(raw_adc_value);
 
-    ESP_LOGI("ADC", "SMA data %d", averaged_value);
+    // ESP_LOGI("ADC", "SMA data %d", averaged_value);
 
     if (!isLightUp && averaged_value < LIGHT_ON_THRESHOLD)
     {
       isLightUp = true;
       gpio_set_level(LED_PIN, 1);
+      ESP_LOGI("ADC", "SMA data %d", averaged_value);
       ESP_LOGI("LED", "Turn ON");
     }
     else if (isLightUp && averaged_value > LIGHT_OFF_THRESHOLD)
     {
       isLightUp = false;
       gpio_set_level(LED_PIN, 0);
+      ESP_LOGI("ADC", "SMA data %d", averaged_value);
       ESP_LOGI("LED", "Turn OFF");
     }
 
-    vTaskDelay(pdMS_TO_TICKS(1000));
+    vTaskDelay(pdMS_TO_TICKS(100));
   }
 }
